@@ -1,57 +1,73 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useMemo } from 'react';
+import {
+  ThemeProvider as MuiThemeProvider,
+  createTheme,
+  CssBaseline,
+  Box
+} from '@mui/material';
+import { ThemeProvider as CustomThemeProvider, useTheme } from './context/ThemeContext';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { ThemeProvider, createTheme } from '@mui/material';
-import CssBaseline from '@mui/material/CssBaseline';
-import store from './store';
+import { store } from './store';
 
-// Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-
-// Pages
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Cart from './pages/Cart';
-import AdminPanel from './pages/AdminPanel';
-import ProfilePage from './pages/ProfilePage';
-import PaymentPage from './pages/PaymentPage';
+import CartPage from './pages/CartPage';
+import CheckoutPage from './pages/CheckoutPage';
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#1976d2',
-    },
-    secondary: {
-      main: '#dc004e',
-    },
-  },
-});
+import './App.css';
+
+const AppContent = () => {
+  const { mode } = useTheme();
+  
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+          primary: {
+            main: '#2C3E50',
+          },
+          secondary: {
+            main: '#E67E22',
+          },
+        },
+      }),
+    [mode]
+  );
+
+  return (
+    <MuiThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <Navbar />
+        <Box component="main" sx={{ flexGrow: 1 }}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </Box>
+        <Footer />
+      </Box>
+    </MuiThemeProvider>
+  );
+};
 
 function App() {
   return (
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Router>
-          <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <Navbar />
-            <main style={{ flex: 1 }}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/admin" element={<AdminPanel />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/payment" element={<PaymentPage />} />
-              </Routes>
-            </main>
-            <Footer />
-          </div>
-        </Router>
-      </ThemeProvider>
+      <CustomThemeProvider>
+        <BrowserRouter>
+          <AppContent />
+        </BrowserRouter>
+      </CustomThemeProvider>
     </Provider>
   );
 }
