@@ -7,18 +7,11 @@
       "config": {
         "distDir": "build",
         "installCommand": "npm install --legacy-peer-deps",
-        "buildCommand": "CI=false npm run build"
+        "buildCommand": "CI=false npm run build:react"
       }
     }
   ],
   "routes": [
-    {
-      "src": "/static/(.*)",
-      "headers": {
-        "cache-control": "public, max-age=31536000, immutable"
-      },
-      "continue": true
-    },
     {
       "src": "/(.*)",
       "dest": "/index.html"
