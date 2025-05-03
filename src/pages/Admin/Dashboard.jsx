@@ -1,75 +1,70 @@
+// Dashboard.js
 import React, { useState } from 'react';
-import {
-  Container,
-  Grid,
-
-  Paper,
-  Typography,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../../features/cartSlice';  // Fixed import path with correct relative path
+import { Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 
 const Dashboard = () => {
-  const [products, setProducts] = useState([
-    { id: 1, name: 'Laptop', price: 999.99, stock: 10 },
-    // Add more products
-  ]);
+  const [newProduct, setNewProduct] = useState({
+    name: '',
+    price: '',
+    stock: ''
+  });
+  const [openDialog, setOpenDialog] = useState(false);
+  const dispatch = useDispatch();
 
-  const handleDelete = (id) => {
-    setProducts(products.filter(product => product.id !== id));
+  const handleAddProduct = () => {
+    const product = {
+      id: Date.now(),
+      name: newProduct.name,
+      price: parseFloat(newProduct.price),
+      stock: parseInt(newProduct.stock),
+    };
+    // Dispatch addToCart action to add product to the cart
+    dispatch(addToCart(product));
+    setOpenDialog(false);
+    setNewProduct({ name: '', price: '', stock: '' });
   };
 
   return (
-    <Container sx={{ py: 4 }}>
-      <Typography variant="h4" sx={{ mb: 4 }}>
-        Admin Dashboard
-      </Typography>
-      <Button variant="contained" color="primary" sx={{ mb: 4 }}>
-        Add New Product
+    <>
+      <Button variant="contained" onClick={() => setOpenDialog(true)}>
+        Add Product
       </Button>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Stock</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {products.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell>{product.id}</TableCell>
-                <TableCell>{product.name}</TableCell>
-                <TableCell>${product.price}</TableCell>
-                <TableCell>{product.stock}</TableCell>
-                <TableCell>
-                  <Button startIcon={<EditIcon />} sx={{ mr: 1 }}>
-                    Edit
-                  </Button>
-                  <Button 
-                    startIcon={<DeleteIcon />} 
-                    color="error"
-                    onClick={() => handleDelete(product.id)}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Container>
+
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Add New Product</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Product Name"
+            value={newProduct.name}
+            onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Price"
+            value={newProduct.price}
+            onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Stock"
+            value={newProduct.stock}
+            onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })}
+            fullWidth
+            margin="normal"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+          <Button onClick={handleAddProduct} variant="contained">
+            Add Product
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 

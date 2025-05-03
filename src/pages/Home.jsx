@@ -1,65 +1,99 @@
-import React, { useState } from 'react';
-import { 
-  Container, Grid, Card, CardMedia, CardContent, 
-  Typography, CardActions, Button, TextField, Box 
-} from '@mui/material';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-
-const products = [
-  {
-    id: 1,
-    name: 'Laptop',
-    price: 999.99,
-    image: 'https://placeholder.com/300x200',
-    category: 'Electronics'
-  },
-  // Add more products here
-];
+import React from 'react';
+import { Container, Typography, Box, Grid } from '@mui/material';
+import FeaturedProducts from '../components/FeaturedProducts';
+import { useSelector } from 'react-redux';
+import { selectFeaturedProducts } from '../features/productsSlice';
 
 const Home = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const featuredProducts = useSelector(selectFeaturedProducts);
 
   return (
-    <Container sx={{ py: 4 }}>
-      <Box sx={{ mb: 4 }}>
-        <TextField
-          fullWidth
-          label="Search Products"
-          variant="outlined"
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+    <Container maxWidth="lg">
+      <Box sx={{ py: 8, textAlign: 'center' }}>
+        <Typography
+          variant="h2"
+          component="h1"
+          gutterBottom
+          sx={{
+            fontWeight: 'bold',
+            color: 'primary.main',
+            mb: 4
+          }}
+        >
+          Welcome to Aura Store
+        </Typography>
+        <Typography
+          variant="h5"
+          color="text.secondary"
+          paragraph
+          sx={{ mb: 6 }}
+        >
+          Discover our curated collection of premium products
+        </Typography>
       </Box>
-      <Grid container spacing={4}>
-        {products.map((product) => (
-          <Grid item key={product.id} xs={12} sm={6} md={4}>
-            <Card sx={{ height: '100%' }}>
-              <CardMedia
-                component="img"
-                height="200"
-                image={product.image}
-                alt={product.name}
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
-                  {product.name}
-                </Typography>
-                <Typography>
-                  ${product.price}
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button 
-                  size="small" 
-                  variant="contained" 
-                  startIcon={<ShoppingCartIcon />}
-                >
-                  Add to Cart
-                </Button>
-              </CardActions>
-            </Card>
+
+      <Box sx={{ mb: 8 }}>
+        <Typography
+          variant="h4"
+          component="h2"
+          gutterBottom
+          sx={{
+            fontWeight: 'bold',
+            color: 'primary.main',
+            mb: 4
+          }}
+        >
+          Featured Products
+        </Typography>
+        <FeaturedProducts products={featuredProducts} />
+      </Box>
+
+      <Box sx={{ mb: 8 }}>
+        <Typography
+          variant="h4"
+          component="h2"
+          gutterBottom
+          sx={{
+            fontWeight: 'bold',
+            color: 'primary.main',
+            mb: 4
+          }}
+        >
+          Why Choose Aura Store?
+        </Typography>
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={4}>
+            <Box sx={{ textAlign: 'center', p: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                Premium Quality
+              </Typography>
+              <Typography color="text.secondary">
+                We source only the finest products to ensure your satisfaction
+              </Typography>
+            </Box>
           </Grid>
-        ))}
-      </Grid>
+          <Grid item xs={12} md={4}>
+            <Box sx={{ textAlign: 'center', p: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                Fast Shipping
+              </Typography>
+              <Typography color="text.secondary">
+                Get your products delivered quickly and securely
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Box sx={{ textAlign: 'center', p: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                Excellent Support
+              </Typography>
+              <Typography color="text.secondary">
+                Our team is always here to help with any questions
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
     </Container>
   );
 };
