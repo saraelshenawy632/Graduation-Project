@@ -6,8 +6,8 @@
       "use": "@vercel/static-build",
       "config": {
         "distDir": "build",
-        "installCommand": "npm install --legacy-peer-deps",
-        "buildCommand": "CI=false npm run build:react"
+        "installCommand": "npm install --legacy-peer-deps && chmod +x node_modules/.bin/react-scripts",
+        "buildCommand": "CI=false react-scripts build"
       }
     }
   ],
